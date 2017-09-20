@@ -13,7 +13,6 @@
             <li><a href="authorController?action=list">View All Authors</a></li>
             <li>More To Come...</li>
         </ul>
-        
-            
+  
     </body>
 </html>
