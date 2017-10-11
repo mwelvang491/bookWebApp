@@ -13,7 +13,9 @@
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
+        
+
     <dependencies>
         <dependency>
             <groupId>javax</groupId>
@@ -21,6 +23,23 @@
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- ADD THIS -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.44</version>
+        </dependency>
+        <!-- END ADD -->
+        
+        <!-- https://mvnrepository.com/artifact/org.apache.derby/derbyclient -->
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derbyclient</artifactId>
+            <version>10.13.1.1</version>
+        </dependency>
+
+        
     </dependencies>
 
     <build>
