@@ -19,12 +19,23 @@ public class AuthorService {
 
     private IAuthorDao authorDao;
     private final String AUTHOR_TBL = "author";
-    private final String AUTHOR_PK  = "author_id";
+    private final String AUTHOR_PK_NAME  = "author_id";
     
     public AuthorService(IAuthorDao authorDao) {
         setAuthorDao(authorDao);
     }
 
+    public void updateRecordByPrimaryKey(Object primaryKeyValue, List<String> colNames, List<Object> colValues) 
+            throws ClassNotFoundException, SQLException{
+        
+        
+       authorDao.updateRecordByPrimaryKey(primaryKeyValue , colNames, colValues);
+        
+     
+    }
+       
+    
+    
     public int removeAuthor(String id) throws ClassNotFoundException, SQLException, NumberFormatException {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("Id must be a Integer greater than 0");
@@ -59,13 +70,17 @@ public class AuthorService {
 
         AuthorService authorService = new AuthorService(dao);
 
-        List<Author> list = authorService.getAuthorList();
-
-        for (Author a : list) {
-            System.out.println(a.getAuthorId() + ", "
-                    + a.getAuthorName() + ", " + a.getDateAdded() + "\n");
-
-        }
+        authorService.updateRecordByPrimaryKey(12,  
+                        Arrays.asList("author_name", "date_added"),
+                        Arrays.asList("James Franco", "2013-05-18" ));
+        
+//        List<Author> list = authorService.getAuthorList();
+//
+//        for (Author a : list) {
+//            System.out.println(a.getAuthorId() + ", "
+//                    + a.getAuthorName() + ", " + a.getDateAdded() + "\n");
+//
+//        }
 
     }
 

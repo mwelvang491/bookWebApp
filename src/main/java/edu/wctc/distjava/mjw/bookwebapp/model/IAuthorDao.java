@@ -16,5 +16,11 @@ public interface IAuthorDao {
 
     //convoulted difficult way. But Faster then easier one line ways.
     List<Author> getListOfAuthors() throws SQLException, ClassNotFoundException;
+    
     int removeAuthorById(Integer id) throws ClassNotFoundException, SQLException;
+    
+    public void updateRecordByPrimaryKey(Object primaryKeyValue, List<String> colNames, List<Object> colValues) 
+            throws ClassNotFoundException, SQLException;
+    
+    
 }

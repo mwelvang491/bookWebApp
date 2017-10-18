@@ -21,6 +21,9 @@ public interface DataAccess {
      * @return
      * @throws SQLException
      */
+    public abstract int updateRecordByPrimaryKey(String tableName, String primaryKeyName, Object primaryKeyId, 
+                            List<String> colNames, List<Object> colValues) throws SQLException;
+    
     List<Map<String, Object>> getAllRecords(String tableName, int maxRecords) 
             throws SQLException, ClassNotFoundException;
     
@@ -33,4 +36,6 @@ public interface DataAccess {
     void closeConnection() throws SQLException;
     
     public int createRecord(String tableName, List<String> colNames, List<Object> colValues) throws SQLException;
+
+  
 }

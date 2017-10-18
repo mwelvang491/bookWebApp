@@ -19,13 +19,11 @@
         <h1>Author List</h1>
         
         <table border="1">
-            <th>Author Id</th>
             <th>Author Name</th>
             <th>Dated Added</th>
             <c:forEach var="author" items="${authorList}">
                 <tr >
-                    <td> ${author.authorId}</td> 
-                    <td> ${author.authorName}</td>  
+                    <td><a href="AuthorController?action=Edit&Id='${author.authorId}'">${author.authorName}</a> </td>  
                     <td> <fmt:formatDate pattern = "MM-dd-yyyy" value = "${author.dateAdded}" /> </td> 
                 </tr>
             </c:forEach>

@@ -64,7 +64,15 @@ public class AuthorController extends HttpServlet {
             if (action.equalsIgnoreCase(LIST_ACTION)) {
                 authorList = authorService.getAuthorList();
                 request.setAttribute("authorList", authorList);
-            }
+            }else if(action.equalsIgnoreCase("delete")){
+                //delete by primary key. Delete
+            }else if(action.equalsIgnoreCase("updatebyPrimarKey")){
+                //updateByPrimaryKey Update
+            }else if(action.equalsIgnoreCase("getAllRecords")) {
+                //get all records. Retreive
+            }else if(action.equalsIgnoreCase("createNewRecord")){
+                //create new Record.  
+            } 
 
         } catch (Exception e) {
             destination = "/authorList.jsp";

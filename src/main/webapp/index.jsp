@@ -7,6 +7,7 @@
         <title>Book Web Application</title>
     </head>
     <body>
+        <jsp:include page="header.jsp"/>
         <h1>Pick A Task</h1>
         
         <ul>

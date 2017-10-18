@@ -13,6 +13,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,27 +39,7 @@ public class MySqlDataAccess implements DataAccess {
     public void closeConnection() throws SQLException {
         if(conn !=null) conn.close();
     }
-    
-    public int updateRecord(String tableName, String primaryKeyName, Object primaryKeyID, 
-                            List<String> colNames, List<Object> colValues){
-//      Example Update Statement.         
-//      UPDATE Customers.
-//      SET ContactName = 'Alfred Schmidt', City= 'Frankfurt'
-//      WHERE CustomerID = 1;
-
-        String sql = " UPDATE " + tableName + 
-                     //need an array to set values. 
-                     //Will Loop through those here. 
-                     " SET "    + colNames + " = " + colValues + 
-                     " WHERE "  + primaryKeyName + " = " + primaryKeyID;
-        
-       
-    
-        
-        
-        return 0;
-    }
-
+ 
     @Override
     public int createRecord(String tableName, List<String> colNames, List<Object> colValues)
             throws SQLException{
@@ -146,9 +127,52 @@ public class MySqlDataAccess implements DataAccess {
         
         return rawData;
     }
-
     
-  
+    
+//         db.updateRecord("author", "author_id", a , 
+//                        Arrays.asList("author_name", "date_added"),
+//                        Arrays.asList("Bobby Little", 10-10-2010 ));
+//    
+
+    @Override
+        public int updateRecordByPrimaryKey(String tableName, String primaryKeyName, Object primaryKeyId, 
+                            List<String> colNames, List<Object> colValues) throws SQLException{
+        
+//      Example Update Statement.         
+//      UPDATE Customers.
+//      SET ContactName = 'Alfred Schmidt', City= 'Frankfurt'
+//      WHERE CustomerID = 1;
+        String sql = " UPDATE " + tableName + " SET ";
+
+        StringJoiner sj = new StringJoiner(" = ?, ", "" , " = ? ");
+        //need an array to set values. 
+        //Will Loop through those here. 
+        //  " SET "    + colNames + " = " + colValues + 
+        for(String colName : colNames) {
+          sj.add(colName);
+        }
+        sql += sj.toString();
+        if(DEBUG) System.out.println(sj.toString()); //check that String joiner is doing what we want. 
+            
+        sql += "WHERE " + primaryKeyName + " = ?";
+        
+        System.out.println("Sql statement says: "+ "\n"  + sql);
+        
+        pstmt = conn.prepareStatement(sql);
+        
+        for(int i =0; i< colNames.size(); i++){
+            pstmt.setObject(i+1, colValues.get(i) );
+        }
+        
+        pstmt.setObject(colNames.size()+1, primaryKeyId );
+        
+        if(DEBUG) System.out.println("final query: " + "\n" + pstmt.toString());
+        
+        pstmt.executeUpdate();
+        
+        
+        return 0;
+    }
     
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         
@@ -162,6 +186,13 @@ public class MySqlDataAccess implements DataAccess {
 //        int recsAdded = db.createRecord("author",
 //                        Arrays.asList("author_name", "date_added"),
 //                        Arrays.asList("Bob Jones", "2012-02-14"));
+
+       int a = 8;
+                      db.updateRecordByPrimaryKey("author", "author_id", a , 
+                        Arrays.asList("author_name", "date_added"),
+                        Arrays.asList("Stuart Little", "2010-05-18" ));
+
+
 
         db.closeConnection();
         
@@ -177,6 +208,5 @@ public class MySqlDataAccess implements DataAccess {
 //        }
             
     }
-    
-    
+ 
 }

@@ -6,6 +6,7 @@
 package edu.wctc.distjava.mjw.bookwebapp.model;
 
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class AuthorDao implements IAuthorDao {
     private String password;
     private DataAccess db;
     private final String AUTHOR_TBL = "author";
-    private final String AUTHOR_PK  = "author_id";
+    private final String AUTHOR_PK_NAME  = "author_id";
     
     public AuthorDao(String driverClass, String url, String userName, String password, DataAccess db){
         setDriverClass(driverClass);
@@ -34,6 +35,25 @@ public class AuthorDao implements IAuthorDao {
         
     };
     
+//             db.updateRecord("author", "author_id", a , 
+//                        Arrays.asList("author_name", "date_added"),
+//                        Arrays.asList("Bobby Little", 10-10-2010 ));
+//    
+//
+//    @Override
+//        public int updateRecordByPrimaryKey(String tableName, String primaryKeyName, Object primaryKeyId, 
+//                            List<String> colNames, List<Object> colValues)
+    
+    public void updateRecordByPrimaryKey(Object primaryKeyValue, List<String> colNames, List<Object> colValues) throws ClassNotFoundException, SQLException{
+        db.openConnection(driverClass, url, userName, password);
+        
+        db.updateRecordByPrimaryKey(AUTHOR_TBL, AUTHOR_PK_NAME, primaryKeyValue , colNames, colValues);
+        
+        db.closeConnection();
+    }
+    
+    
+    
     public int removeAuthorById(Integer id) throws ClassNotFoundException, SQLException{
      if(id == null || id < 1 ){
          throw new IllegalArgumentException("Id must be a Integer greater than 0");
@@ -41,7 +61,7 @@ public class AuthorDao implements IAuthorDao {
      
      db.openConnection(driverClass, url, userName, password);
      
-     int recsDeleted = db.deleteRecordByPrimaryKey(AUTHOR_TBL, AUTHOR_PK, id );
+     int recsDeleted = db.deleteRecordByPrimaryKey(AUTHOR_TBL, AUTHOR_PK_NAME, id );
      
     return  recsDeleted;
     }
@@ -61,7 +81,7 @@ public class AuthorDao implements IAuthorDao {
         for(Map<String,Object> rec : rawData){
             author = new Author();
             //get the authorId 
-            Object objRecId = rec.get(AUTHOR_PK);
+            Object objRecId = rec.get(AUTHOR_PK_NAME);
             Integer recId = objRecId == null ? 0 : Integer.parseInt(objRecId.toString());
             author.setAuthorId(recId);
             
@@ -130,13 +150,18 @@ public class AuthorDao implements IAuthorDao {
                 new MySqlDataAccess()
         );       
         
-        List<Author> list = dao.getListOfAuthors();
-
-        for (Author a : list) {
-            System.out.println(a.getAuthorId() + ", "
-                    + a.getAuthorName() + ", " + a.getDateAdded() + "\n");
-        }
-    }
+        dao.updateRecordByPrimaryKey(8, 
+                        Arrays.asList("author_name", "date_added"),
+                        Arrays.asList("Spock Vulcan", "2210-05-18" ));
+        
+        
+//        List<Author> list = dao.getListOfAuthors();
+//
+//        for (Author a : list) {
+//            System.out.println(a.getAuthorId() + ", "
+//                    + a.getAuthorName() + ", " + a.getDateAdded() + "\n");
+//        }
+       }
        
 }
  
