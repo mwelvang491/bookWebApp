@@ -13,14 +13,21 @@ import java.util.List;
  * @author mitchell
  */
 public interface IAuthorDao {
-
-    //convoulted difficult way. But Faster then easier one line ways.
-    List<Author> getListOfAuthors() throws SQLException, ClassNotFoundException;
     
-    int removeAuthorById(Integer id) throws ClassNotFoundException, SQLException;
+     public List<Author> getAuthorByPrimaryKey(Object primaryKeyValue)
+             throws ClassNotFoundException, SQLException;
+     
+    //convoulted difficult way. But Faster then easier one line ways.
+    List<Author> getListOfAuthors() 
+            throws SQLException, ClassNotFoundException;
+    
+    int removeAuthorById(Integer id) 
+            throws ClassNotFoundException, SQLException;
     
     public void updateRecordByPrimaryKey(Object primaryKeyValue, List<String> colNames, List<Object> colValues) 
             throws ClassNotFoundException, SQLException;
     
-    
+     public void createAuthor(List<String> colNames, List<Object> colValues) 
+             throws ClassNotFoundException, SQLException;
+     
 }

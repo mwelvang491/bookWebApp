@@ -7,4 +7,4 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 
-<h1>My Header</h1>
+<h1>Example Fragment Header</h1>

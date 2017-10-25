@@ -5,20 +5,19 @@
  */
 package edu.wctc.distjava.mjw.bookwebapp.controller;
 
-import edu.wctc.distjava.mjw.bookwebapp.model.Author;
+import static edu.wctc.distjava.mjw.bookwebapp.controller.AuthorController.ACTION;
+import static edu.wctc.distjava.mjw.bookwebapp.controller.AuthorController.CREATE_NEW;
 import edu.wctc.distjava.mjw.bookwebapp.model.AuthorDao;
 import edu.wctc.distjava.mjw.bookwebapp.model.AuthorService;
 import edu.wctc.distjava.mjw.bookwebapp.model.IAuthorDao;
 import edu.wctc.distjava.mjw.bookwebapp.model.MySqlDataAccess;
 import java.io.IOException;
 import java.io.PrintWriter;
-import static java.lang.System.console;
-import static java.lang.System.out;
+import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -29,17 +28,10 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author mitchell
  */
-@WebServlet(name = "AuthorController", urlPatterns = {"/authorController"})
-public class AuthorController extends HttpServlet {
-
-    public static final String ACTION = "action";
-    public static final String LIST_ALL = "listAll";
-    public static final String UPDATE_BY_PRIMARY_KEY = "updatebyPrimaryKey";
-    public static final String DELETE = "delete";
-    //public static final String GET_ALL = "getAllRecords";
-    public static final String CREATE_NEW = "add";
-    
-    
+@WebServlet(name = "AuthorAddAuthorController", urlPatterns = {"/authorAddAuthorController"})
+public class AuthorAddAuthorController extends HttpServlet {
+     public static final String ACTION = "action";
+     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -50,12 +42,15 @@ public class AuthorController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+            throws ServletException, IOException, ClassNotFoundException, SQLException {
+        
         response.setContentType("text/html;charset=UTF-8");
-        String destination = "/authorList.jsp"; //defualt destination
-
-        try {
+        String destination = "/addAuthor.jsp"; //defualt destination
+        
+        
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+              
             String action = request.getParameter(ACTION);
 
             IAuthorDao dao = new AuthorDao(
@@ -65,65 +60,35 @@ public class AuthorController extends HttpServlet {
                     "admin", //password
                     new MySqlDataAccess()
             );
-
+            
             AuthorService authorService = new AuthorService(dao);
-
-            List<Author> authorList = null;
-
-             if(action.equalsIgnoreCase(CREATE_NEW)){
-                //create new Record. 
-                //request.setAttribute("test", "CREATED SOME STUFF");
-                                
+            
+            if(action.equalsIgnoreCase("add")){
+                
                 List<String> colNames = Arrays.asList( "author_name", "date_added" );
                 
-                     String authorName =  request.getParameter("authorName");
-                     String dateAdded  = (String) request.getAttribute("dateAdded");
-                      
-                    System.out.println(authorName);
-                    System.out.println(dateAdded);
+                     String authorName = request.getParameter("authorName");
+                     String dateAdded  = request.getParameter("dateAdded");
+                           
+                     System.out.println("Test: " + authorName );
                      
-             //   List<Object> colValues = Arrays.asList( authorName , dateAdded );
-   
-             //  authorService.createNewAuthor( colNames ,  colValues );
-                 
-                 
-            } else if (action.equalsIgnoreCase(LIST_ALL)) {
-                //retrieve records. 
-                authorList = authorService.getAuthorList();
-                request.setAttribute("authorList", authorList);
+                List<Object> colValues = Arrays.asList( authorName , dateAdded );
                 
+//                String[] authorName = request.getParameterValues("authorName");
+//                String[] dateAdded = request.getParameterValues("dateAdded");
                 
-            }else if(action.equalsIgnoreCase(UPDATE_BY_PRIMARY_KEY)){
-                //updateByPrimaryKey Update
-                 request.setAttribute("test", "UPDATED");
-                 
-                 
-            }else if(action.equalsIgnoreCase(DELETE)){
-                //delete by primary key. Delete
-                request.setAttribute("test", "DELETED");
-                System.out.println("DELETED DELETED DELETED");
-                System.out.println("DELETED DELETED DELETED");
-                System.out.println("DELETED DELETED DELETED");
-                System.out.println("DELETED DELETED DELETED");
-                System.out.println("DELETED DELETED DELETED");
-                
-                String[] selectedAuthors = request.getParameterValues("boxes");
-                 
-                System.out.println("test:" + selectedAuthors );
-                 
-                 for(int i=0; selectedAuthors.length < i ; i++){
                     
-                    authorService.removeAuthor( selectedAuthors[i] );
-                 } 
-            }
-
-        } catch (Exception e) {
-            destination = "/authorList.jsp";
+              //  authorService.createNewAuthor( colNames ,  colValues );
+                
+                
+                
+                }
             
         }
+//        catch(ClassNotFoundException e){
+//            destination = "/authorList.jsp";
+//        }
         
-      RequestDispatcher view = request.getRequestDispatcher(destination);
-      view.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -138,7 +103,13 @@ public class AuthorController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AuthorAddAuthorController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthorAddAuthorController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -152,7 +123,13 @@ public class AuthorController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AuthorAddAuthorController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthorAddAuthorController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

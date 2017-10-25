@@ -11,7 +11,7 @@
         <h1>Pick A Task</h1>
         
         <ul>
-            <li><a href="authorController?action=list">View All Authors</a></li>
+            <li><a href="authorController?action=listAll">View All Authors</a></li>
             <li>More To Come...</li>
         </ul>
   

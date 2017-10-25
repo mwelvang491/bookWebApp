@@ -5,6 +5,7 @@
  */
 package edu.wctc.distjava.mjw.bookwebapp.model;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,10 @@ public interface DataAccess {
 
     void closeConnection() throws SQLException;
     
-    public int createRecord(String tableName, List<String> colNames, List<Object> colValues) throws SQLException;
+    public int createRecord(String tableName, List<String> colNames, List<Object> colValues) 
+            throws SQLException;
 
-  
+    public Object getRecordByPrimaryKey(String tableName, String primaryKeyName, Object primaryKey) 
+            throws SQLException;
+    
 }

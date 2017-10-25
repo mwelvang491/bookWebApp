@@ -35,14 +35,59 @@ public class AuthorDao implements IAuthorDao {
         
     };
     
-//             db.updateRecord("author", "author_id", a , 
+//                        db.updateRecord("author", "author_id", a , 
 //                        Arrays.asList("author_name", "date_added"),
 //                        Arrays.asList("Bobby Little", 10-10-2010 ));
 //    
 //
+//                        db.updateRecord("author", "author_id", a , 
+//                        Arrays.asList("author_name", "date_added"),
+//                       
 //    @Override
 //        public int updateRecordByPrimaryKey(String tableName, String primaryKeyName, Object primaryKeyId, 
 //                            List<String> colNames, List<Object> colValues)
+    
+    
+    public List<Author> getAuthorByPrimaryKey(Object primaryKeyValue) throws ClassNotFoundException, SQLException{
+        
+        db.openConnection(driverClass, url, userName, password);
+        
+        List<Author> list = new Vector<>(); //data is stored here. 
+        List<Map<String,Object>> rawData = (List<Map<String,Object>>) db.getRecordByPrimaryKey( AUTHOR_TBL , AUTHOR_PK_NAME  , primaryKeyValue); //map is used to get data and then storee that data in the vector list. 
+        
+        Author author = null;
+        
+        for(Map<String,Object> rec : rawData){
+            author = new Author();
+            //get the authorId 
+            Object objRecId = rec.get(AUTHOR_PK_NAME);
+            Integer recId = objRecId == null ? 0 : Integer.parseInt(objRecId.toString());
+            author.setAuthorId(recId);
+            
+            Object objName = rec.get("author_name");
+            String authorName = objName == null ? "" : objName.toString();
+            author.setAuthorName(authorName);
+            
+            Object objRecAdded = rec.get("date_added");
+            Date recAdded = objRecAdded == null ? null : (Date) objRecAdded;
+            author.setDateAdded(recAdded);
+            
+            list.add(author);
+        }
+        
+        db.closeConnection();
+        
+    return list;
+            }
+    
+    public void createAuthor(List<String> colNames, List<Object> colValues) throws ClassNotFoundException, SQLException{
+        db.openConnection(driverClass, url, userName, password);
+        
+        db.createRecord(AUTHOR_TBL, colNames,  colValues );
+        
+        db.closeConnection();
+    }
+    
     
     public void updateRecordByPrimaryKey(Object primaryKeyValue, List<String> colNames, List<Object> colValues) throws ClassNotFoundException, SQLException{
         db.openConnection(driverClass, url, userName, password);
@@ -150,9 +195,13 @@ public class AuthorDao implements IAuthorDao {
                 new MySqlDataAccess()
         );       
         
-        dao.updateRecordByPrimaryKey(8, 
-                        Arrays.asList("author_name", "date_added"),
-                        Arrays.asList("Spock Vulcan", "2210-05-18" ));
+         System.out.println(
+         dao.getAuthorByPrimaryKey(2)
+        );
+        
+//        dao.updateRecordByPrimaryKey(8, 
+//                        Arrays.asList("author_name", "date_added"),
+//                        Arrays.asList("Spock Vulcan", "2210-05-18" ));
         
         
 //        List<Author> list = dao.getListOfAuthors();

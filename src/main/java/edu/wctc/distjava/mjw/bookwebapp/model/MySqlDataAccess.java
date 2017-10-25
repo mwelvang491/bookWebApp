@@ -39,7 +39,79 @@ public class MySqlDataAccess implements DataAccess {
     public void closeConnection() throws SQLException {
         if(conn !=null) conn.close();
     }
- 
+    
+        /**
+     * Returns records from a table. Requires an Open connection. 
+     * @param tableName
+     * @param maxRecords
+     * @return
+     * @throws SQLException 
+     */
+    @Override
+    public List<Map <String, Object >> getAllRecords(String tableName, int maxRecords) 
+            throws SQLException, ClassNotFoundException{
+        
+        List<Map <String, Object >> rawData = new Vector<>();
+        String sql = " ";
+        
+        if(maxRecords > ALL_RECORDS){
+            sql = "select * "
+            +     "from " + tableName + " limit " + maxRecords;
+        }else {
+            sql = "select * from " + tableName;
+        }
+       
+        stmt = conn.createStatement();
+        rs =  stmt.executeQuery(sql);
+        
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int colCount = rsmd.getColumnCount();
+        Map<String,Object> record = null; //linked hash map maintains order. Hashmaps do not. 
+        
+        while(  rs.next()   ){
+            //#### is one bsed.
+            record = new LinkedHashMap<>();
+            for(int colNum=1; colNum <= colCount; colNum++){
+                record.put( rsmd.getColumnName(colNum) , rs.getObject(colNum)  );
+            }
+            rawData.add(record);
+        }
+            
+        
+        return rawData;
+    }
+    
+//    select *
+//    from author
+//    where author_id = 2
+    @Override
+    public List<Map <String, Object >> getRecordByPrimaryKey(String tableName, String primaryKeyName, Object primaryKey)
+            throws SQLException {
+
+        List<Map<String, Object>> rawData = new Vector<>();
+        String sql = " select *"
+                   + " from  " + tableName
+                   + " where " + primaryKeyName + " = " + primaryKey;
+
+        stmt = conn.createStatement();
+        rs = stmt.executeQuery(sql);
+
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int colCount = rsmd.getColumnCount();
+        Map<String, Object> record = null; //linked hash map maintains order. Hashmaps do not. 
+
+        while (rs.next()) {
+            //#### is one bsed.
+            record = new LinkedHashMap<>();
+            for (int colNum = 1; colNum <= colCount; colNum++) {
+                record.put(rsmd.getColumnName(colNum), rs.getObject(colNum));
+            }
+            rawData.add(record);
+        }
+
+        return rawData;
+    }
+
     @Override
     public int createRecord(String tableName, List<String> colNames, List<Object> colValues)
             throws SQLException{
@@ -87,46 +159,7 @@ public class MySqlDataAccess implements DataAccess {
         return recsDeleted;
     }
     
-    /**
-     * Returns records from a table. Requires an Open connection. 
-     * @param tableName
-     * @param maxRecords
-     * @return
-     * @throws SQLException 
-     */
-    @Override
-    public List<Map <String, Object >> getAllRecords(String tableName, int maxRecords) 
-            throws SQLException, ClassNotFoundException{
-        
-        List<Map <String, Object >> rawData = new Vector<>();
-        String sql = " ";
-        
-        if(maxRecords > ALL_RECORDS){
-            sql = "select * "
-            +     "from " + tableName + "limit " + maxRecords;
-        }else {
-            sql = "select * from " + tableName;
-        }
-       
-        stmt = conn.createStatement();
-        rs =  stmt.executeQuery(sql);
-        
-        ResultSetMetaData rsmd = rs.getMetaData();
-        int colCount = rsmd.getColumnCount();
-        Map<String,Object> record = null; //linked hash map maintains order. Hashmaps do not. 
-        
-        while(  rs.next()   ){
-            //#### is one bsed.
-            record = new LinkedHashMap<>();
-            for(int colNum=1; colNum <= colCount; colNum++){
-                record.put( rsmd.getColumnName(colNum) , rs.getObject(colNum)  );
-            }
-            rawData.add(record);
-        }
-            
-        
-        return rawData;
-    }
+
     
     
 //         db.updateRecord("author", "author_id", a , 
@@ -186,14 +219,17 @@ public class MySqlDataAccess implements DataAccess {
 //        int recsAdded = db.createRecord("author",
 //                        Arrays.asList("author_name", "date_added"),
 //                        Arrays.asList("Bob Jones", "2012-02-14"));
-
-       int a = 8;
-                      db.updateRecordByPrimaryKey("author", "author_id", a , 
-                        Arrays.asList("author_name", "date_added"),
-                        Arrays.asList("Stuart Little", "2010-05-18" ));
-
-
-
+        String tableName = "author";
+        String primaryKeyName = "author_id";
+        int a = 2;
+       
+        System.out.println(
+        db.getRecordByPrimaryKey(tableName, primaryKeyName, a)
+        );
+        //db.getRecordByPrimaryKey( "author", "author_id", a);
+       
+        
+     
         db.closeConnection();
         
         

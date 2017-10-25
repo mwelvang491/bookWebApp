@@ -24,18 +24,26 @@ public class AuthorService {
     public AuthorService(IAuthorDao authorDao) {
         setAuthorDao(authorDao);
     }
-
-    public void updateRecordByPrimaryKey(Object primaryKeyValue, List<String> colNames, List<Object> colValues) 
+    
+    public List<Author> getAuthor(Object primaryKey) throws SQLException, ClassNotFoundException{
+        
+        return authorDao.getAuthorByPrimaryKey(primaryKey);
+    }
+    
+    public void createNewAuthor(List<String> colNames, List<Object> colValues) 
+            throws ClassNotFoundException, SQLException{
+        //can i create the colNames here because I already know values?
+        //or is it better to pass through?
+       authorDao.createAuthor(colNames, colValues);
+    }
+    
+    public void updateAuthorByPrimaryKey(Object primaryKeyValue, List<String> colNames, List<Object> colValues) 
             throws ClassNotFoundException, SQLException{
         
-        
        authorDao.updateRecordByPrimaryKey(primaryKeyValue , colNames, colValues);
-        
-     
-    }
        
-    
-    
+    }
+
     public int removeAuthor(String id) throws ClassNotFoundException, SQLException, NumberFormatException {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("Id must be a Integer greater than 0");
@@ -69,10 +77,14 @@ public class AuthorService {
         );
 
         AuthorService authorService = new AuthorService(dao);
-
-        authorService.updateRecordByPrimaryKey(12,  
-                        Arrays.asList("author_name", "date_added"),
-                        Arrays.asList("James Franco", "2013-05-18" ));
+        
+        
+       
+        
+        
+//        authorService.updateAuthorByPrimaryKey(12,  
+//                        Arrays.asList("author_name", "date_added"),
+//                        Arrays.asList("James Franco", "2013-05-18" ));
         
 //        List<Author> list = authorService.getAuthorList();
 //
